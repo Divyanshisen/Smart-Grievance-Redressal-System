@@ -101,28 +101,29 @@ A rule-based chatbot assists users with:
 ---
 
 ## 📂 System Workflow
-Login (User / Authority)
-↓
-Complaint Submission
-↓
-Text Preprocessing
-↓
-TF-IDF Vectorization
-↓
-ML Model Prediction
-↓
-Department + Urgency Output
-↓
-Priority Calculation
-↓
-Data Storage (CSV/DB)
-↓
-Heatmap Generation
-↓
-Dashboard Visualization
-↓
-Chatbot Assistance
-↓
+
+Login (User / Authority)  
+↓  
+Complaint Submission  
+↓  
+Text Preprocessing  
+↓  
+TF-IDF Vectorization  
+↓  
+ML Model Prediction  
+↓  
+Department + Urgency Output  
+↓  
+Priority Calculation  
+↓  
+Data Storage (CSV/DB)  
+↓  
+Heatmap Generation  
+↓  
+Dashboard Visualization  
+↓  
+Chatbot Assistance  
+↓  
 Logout
 
 
