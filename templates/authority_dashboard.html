@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authority Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta http-equiv="refresh" content="8">
+</head>
+<body>
+<div class="container">
+    <h1>Authority Control Center</h1>
+    <p class="subtitle">Monitor complaints, manage priorities and take quick action</p>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="card" style="padding:14px 18px;max-width:100%;">
+        <p class="small-note">{{ messages[0] }}</p>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="stats">
+        <div class="stat-card"><span>Total Complaints</span><h2>{{ total }}</h2></div>
+        <div class="stat-card"><span>Pending Cases</span><h2>{{ pending }}</h2></div>
+        <div class="stat-card"><span>Resolved Cases</span><h2>{{ resolved }}</h2></div>
+        <div class="stat-card"><span>Hotspot Area</span><h2>{{ hotspot["location"] if hotspot else "N/A" }}</h2></div>
+    </div>
+
+    <div class="card chart-card">
+        <h2>Priority Analysis Overview</h2>
+        <canvas id="priorityChart"></canvas>
+    </div>
+
+    <div class="card" style="max-width:100%;padding:18px 22px;">
+        <h2 style="margin-bottom:8px;">Complaint Management Panel</h2>
+        <p class="small-note">Review complaint details, update progress and remove invalid entries from one dashboard.</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Complaint</th>
+                <th>Location</th>
+                <th>Department</th>
+                <th>Urgency</th>
+                <th>Priority</th>
+                <th>Score</th>
+                <th>Status</th>
+                <th>Action</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in complaints %}
+            <tr>
+                <td>{{ c["id"] }}</td>
+                <td>{{ c["name"] }}</td>
+                <td>{{ c["complaint_text"] }}</td>
+                <td>{{ c["location"] }}</td>
+                <td>{{ c["department"] }}</td>
+                <td>{{ c["ml_urgency"] }}</td>
+                <td>
+                    <span class="badge {% if c['final_priority']=='High' %}high{% elif c['final_priority']=='Medium' %}medium{% else %}low{% endif %}">
+                        {{ c["final_priority"] }}
+                    </span>
+                </td>
+                <td>{{ c["score"] }}</td>
+                <td>
+                    <span class="badge {% if c['status']=='Resolved' %}low{% elif c['status']=='In Progress' %}medium{% else %}high{% endif %}">
+                        {{ c["status"] }}
+                    </span>
+                </td>
+                <td>
+                    <a class="action-link" href="{{ url_for('update_status', complaint_id=c['id'], new_status='InProgress') }}">In Progress</a>
+                    <a class="action-link" href="{{ url_for('update_status', complaint_id=c['id'], new_status='Resolved') }}">Resolved</a>
+                </td>
+                <td>
+                    <a class="delete-link" href="{{ url_for('delete_complaint', complaint_id=c['id']) }}" onclick="return confirm('Delete this complaint?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="nav-links">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('heatmap') }}">Heatmap</a>
+        <a href="{{ url_for('chatbot') }}">Chatbot</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const priorityData = JSON.parse('{{ [high|default(0), medium|default(0), low|default(0)]|tojson|safe }}');
+const canvas = document.getElementById("priorityChart");
+
+if (canvas) {
+    new Chart(canvas, {
+        type: "bar",
+        data: {
+            labels: ["High", "Medium", "Low"],
+            datasets: [{
+                label: "Complaints by Priority",
+                data: priorityData,
+                backgroundColor: ["#b5483f", "#d4934e", "#91a84a"],
+                borderRadius: 10,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: "#5c3b2e" } }
+            },
+            scales: {
+                x: {
+                    ticks: { color: "#5c3b2e" },
+                    grid: { display: false }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: "#5c3b2e", precision: 0 },
+                    grid: { color: "rgba(92,59,46,0.08)" }
+                }
+            }
+        }
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Smart Grievance Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>Smart Grievance Portal</h1>
+    <p class="subtitle">AI based complaint classification, geo priority and tracking system</p>
+
+    <div class="section-cover"></div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="card" style="padding:14px 18px;">
+        <p class="small-note">{{ messages[0] }}</p>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="stats">
+        <div class="stat-card"><span>Complaint Routing</span><h2>AI Enabled</h2></div>
+        <div class="stat-card"><span>Priority Engine</span><h2>Dynamic</h2></div>
+        <div class="stat-card"><span>Tracking</span><h2>Live</h2></div>
+        <div class="stat-card"><span>Dashboard</span><h2>Interactive</h2></div>
+    </div>
+
+    <div class="card" style="max-width:100%;">
+        <h2>About Project</h2>
+        <p class="small-note">
+            This portal helps citizens register complaints, track status, and allows authorities to analyze
+            priorities, hotspot areas and resolution progress through a smart dashboard.
+        </p>
+
+        <div class="feature-grid">
+            <div class="feature-box">
+                <h3>Smart Classification</h3>
+                <p>Complaint text is analyzed to predict department and urgency automatically.</p>
+            </div>
+            <div class="feature-box">
+                <h3>Priority Engine</h3>
+                <p>System combines AI urgency, severity keywords and complaint frequency for priority.</p>
+            </div>
+            <div class="feature-box">
+                <h3>Live Tracking</h3>
+                <p>Users can track complaint status while authorities manage actions from dashboard.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Submit New Complaint</h2>
+        <form action="{{ url_for('submit') }}" method="post">
+            <input type="text" name="name" placeholder="Enter your name" required>
+            <textarea name="complaint_text" placeholder="Describe your complaint clearly" required></textarea>
+            <input type="text" name="location" placeholder="Enter city or location" required>
+            <button type="submit">Submit Complaint</button>
+        </form>
+    </div>
+
+    {% if session.get('role') == 'authority' %}
+    <div class="card">
+        <h2>Upload Existing Complaint Dataset</h2>
+        <form action="{{ url_for('upload_csv') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".csv" required>
+            <button type="submit">Upload CSV</button>
+        </form>
+        <p class="small-note">CSV format: name, complaint_text, location</p>
+    </div>
+    {% endif %}
+
+    <div class="nav-links">
+        <a href="{{ url_for('user_dashboard') }}">User Dashboard</a>
+        {% if session.get('role') == 'authority' %}
+        <a href="{{ url_for('authority_dashboard') }}">Authority Dashboard</a>
+        <a href="{{ url_for('heatmap') }}">Heatmap</a>
+        {% endif %}
+        <a href="{{ url_for('chatbot') }}">Chatbot</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Heatmap</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <style>
+        #map{
+            height:600px;
+            width:100%;
+            border-radius:18px;
+            margin-top:20px;
+            box-shadow:0 10px 25px rgba(92,59,46,0.12);
+            border:1px solid #dcc1ab;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Complaint Heatmap</h1>
+    <p class="subtitle">Location-based hotspot analysis for faster authority action</p>
+
+    <div class="stats">
+        <div class="stat-card">
+            <span>Total Locations</span>
+            <h2>{{ geo_points|length }}</h2>
+        </div>
+        <div class="stat-card">
+            <span>High Load Zones</span>
+            <h2>{{ geo_points|selectattr('pending','gt',2)|list|length }}</h2>
+        </div>
+        <div class="stat-card">
+            <span>Live Complaint Points</span>
+            <h2>{{ geo_points|length }}</h2>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="nav-links">
+        <a href="{{ url_for('authority_dashboard') }}">Back</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+
+<script id="geo-data" type="application/json">
+{{ geo_points|tojson }}
+</script>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+const map = L.map("map").setView([22.9734, 78.6569], 5);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "OpenStreetMap"
+}).addTo(map);
+
+const geoPoints = JSON.parse(document.getElementById("geo-data").textContent);
+
+geoPoints.forEach(point => {
+    let color = "#91a84a";
+    if (point.pending > 5) color = "#b5483f";
+    else if (point.pending > 2) color = "#d4934e";
+
+    L.circle([point.lat, point.lng], {
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.35,
+        radius: point.pending * 1200
+    }).addTo(map).bindPopup(
+        `<b>${point.location}</b><br>Complaints: ${point.pending}`
+    );
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Smart Grievance Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <div class="hero-section">
+
+        <div class="hero-text">
+            <div class="hero-banner"></div>
+
+            <h1>Smart Grievance Portal</h1>
+            <p class="subtitle">
+                AI-powered complaint classification, priority tracking and authority response system
+            </p>
+
+            <div class="stats">
+                <div class="stat-card"><span>Complaint Routing</span><h2>AI Enabled</h2></div>
+                <div class="stat-card"><span>Priority Analysis</span><h2>Smart</h2></div>
+                <div class="stat-card"><span>Tracking System</span><h2>Live</h2></div>
+                <div class="stat-card"><span>Authority Dashboard</span><h2>Interactive</h2></div>
+            </div>
+        </div>
+
+        <div>
+            <div class="card login-card">
+                <h2>Sign In</h2>
+
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <p class="small-note">{{ messages[0] }}</p>
+                {% endif %}
+                {% endwith %}
+
+                <form method="post">
+                    <input type="text" name="username" placeholder="Enter username" required>
+                    <input type="password" name="password" placeholder="Enter password" required>
+                    <button type="submit">Login to Portal</button>
+                </form>
+
+                <p class="small-note" style="margin-top:10px;">
+                    Access complaint services, dashboard insights and smart tracking tools.
+                </p>
+            </div>
+
+            <div class="card login-card" style="margin-top:18px;">
+                <h2>About Website</h2>
+                <p class="small-note">
+                    This portal helps citizens register complaints, track complaint progress,
+                    and lets authorities manage priorities, hotspot areas and resolutions from one dashboard.
+                </p>
+
+                <div class="gallery-strip">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

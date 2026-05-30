@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grievance Support Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>Grievance Support Assistant</h1>
+    <p class="subtitle">Get quick help about complaint submission, tracking, priority, dashboard and heatmap</p>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="card" style="padding:14px 18px;">
+        <p class="small-note">{{ messages[0] }}</p>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="assistant-layout">
+        <div class="card chatbot-card">
+            <h2>Ask the Assistant</h2>
+            <form method="post">
+                <input type="text" name="message" placeholder="Ask something like: How is priority calculated?" required>
+                <button type="submit">Ask Assistant</button>
+            </form>
+
+            {% if reply %}
+            <div class="bot-reply">
+                <strong>Assistant Reply:</strong>
+                <p style="margin-top:8px; line-height:1.7;">{{ reply }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="card tips-card">
+            <h2 style="font-size:20px;">Quick Help</h2>
+            <p class="small-note">• Submit complaints from the Home page</p>
+            <p class="small-note">• Track updates from User Dashboard</p>
+            <p class="small-note">• Authority side has graph and heatmap</p>
+            <p class="small-note">• Priority depends on AI + keywords + location load</p>
+
+            {% if suggestions %}
+            <div style="margin-top:16px;">
+                <h2 style="font-size:18px;">Suggested Questions</h2>
+                {% for item in suggestions %}
+                <p class="small-note">• {{ item }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="nav-links">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+</body>
+</html>

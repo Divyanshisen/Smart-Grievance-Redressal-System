@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>User Dashboard</h1>
+    <p class="subtitle">Track all your submitted complaints in real-time</p>
+
+    <!-- Quick Stats -->
+    <div class="stats">
+        <div class="stat-card">
+            <span>Total Complaints</span>
+            <h2>{{ complaints|length }}</h2>
+        </div>
+        <div class="stat-card">
+            <span>Pending</span>
+            <h2>{{ complaints|selectattr('status','equalto','Pending')|list|length }}</h2>
+        </div>
+        <div class="stat-card">
+            <span>Resolved</span>
+            <h2>{{ complaints|selectattr('status','equalto','Resolved')|list|length }}</h2>
+        </div>
+        <div class="stat-card">
+            <span>In Progress</span>
+            <h2>{{ complaints|selectattr('status','equalto','In Progress')|list|length }}</h2>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Complaint</th>
+                <th>Location</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Track</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in complaints %}
+            <tr>
+                <td>{{ c["id"] }}</td>
+                <td>{{ c["name"] }}</td>
+                <td>{{ c["complaint_text"] }}</td>
+                <td>{{ c["location"] }}</td>
+
+                <!-- Priority Badge -->
+                <td>
+                    <span class="badge {% if c['final_priority']=='High' %}high{% elif c['final_priority']=='Medium' %}medium{% else %}low{% endif %}">
+                        {{ c["final_priority"] }}
+                    </span>
+                </td>
+
+                <!-- Status Badge -->
+                <td>
+                    <span class="badge 
+                        {% if c['status']=='Resolved' %}low
+                        {% elif c['status']=='In Progress' %}medium
+                        {% else %}high {% endif %}">
+                        {{ c["status"] }}
+                    </span>
+                </td>
+
+                <td>
+                    <a class="action-link" href="{{ url_for('track', complaint_id=c['id']) }}">
+                        View
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Navigation -->
+    <div class="nav-links">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('chatbot') }}">Chatbot</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+</body>
+</html>
