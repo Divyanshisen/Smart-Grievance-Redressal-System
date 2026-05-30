@@ -60,7 +60,7 @@ Final priority is calculated using multiple factors:
 
 ---
 
-## 📊 Heatmap Analytics (IMPORTANT FEATURE)
+## 📊 Heatmap Analytics 
 
 The system includes a **location-based heatmap visualization** to analyze complaint distribution.
 
